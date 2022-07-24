@@ -1,7 +1,10 @@
 use crate::tools;
 use std::{
     collections::{BTreeSet, HashMap},
-    process,
+    process::{
+        self,
+        // Command,
+    }
 };
 pub struct Glossary {
     table: HashMap<String, String>,
@@ -15,7 +18,7 @@ impl Glossary {
 
     fn list(&self) {
         self.table.iter().for_each(|pair| {
-            println!("{}: {}", pair.0, pair.1);
+            println!("{:<10} {:<10}", pair.0, pair.1);
         })
     }
 
@@ -35,7 +38,7 @@ impl Glossary {
     pub fn from(filename: &str) -> Glossary {
         match tools::read_to_vec_string(filename) {
             Err(err) => {
-                eprintln!("Error: {}", err);
+                eprintln!("Error: {} called {}", err, filename);
                 process::exit(1);
             }
             Ok(lines) => {
@@ -52,7 +55,7 @@ impl Glossary {
         }
     }
 
-
+    #[allow(unused)]
     fn list_with_sorted(&self) {
         self.table
             .iter()
@@ -60,10 +63,11 @@ impl Glossary {
             .collect::<BTreeSet<&String>>()
             .iter()
             .for_each(|&word| {
-                println!("{},{}",
+                println!("{:<10} {:<10}",
                     word,self.table.get(word).unwrap());
             });
     }
+
 
     pub fn run(&mut self, args: Vec<String>) -> Result<(),String>{
         if args.len() == 0 {
@@ -87,13 +91,18 @@ impl Glossary {
             "remove" => {
                 let word = args.get(1);
                 if word.is_none() {
-                    return Err(String::from("no word input\n"));
+                    return Err(String::from("no input word\n"));
                 }
                 let word = word.unwrap();
                 self.remove(word)?;
             },
             "list" => {
-                self.list();
+                let other = args.get(1);
+                if other.is_some() && other.unwrap().as_str() == "-s" {
+                    self.list_with_sorted();
+                } else {
+                    self.list();
+                }
             },
             other => {
                 return Err(format!("not find commadn called {}\n",other));
@@ -102,10 +111,10 @@ impl Glossary {
         Ok(())
     }
 
-    // fn pause(&mut self) -> Result<(), Box<dyn Error>> {
-
-    //     Ok(())
-    // }
+    #[allow(unused)]
+    fn set_default_file(filename: &str) -> Result<(),String> {
+        Ok(())
+    }
 }
 
 ///
