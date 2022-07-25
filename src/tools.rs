@@ -24,3 +24,14 @@ pub fn wirte_vec_string(lines: Vec<(&String, &String)>, filename: &str) -> Resul
     fs::write(filename, text)?;
     Ok(())
 }
+
+pub fn cut_word(line: &mut String) {
+    let idx = line.find(" ").unwrap();
+    line.replace_range(idx..line.len(), "");
+}
+
+#[inline]
+pub fn print_vec(liens: &Vec<String>) {
+    liens.iter()
+         .for_each(|line| println!("{:<10}",line));
+}

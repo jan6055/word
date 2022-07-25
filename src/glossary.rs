@@ -4,7 +4,7 @@ use std::{
     process::{
         self,
         // Command,
-    }
+    },
 };
 pub struct Glossary {
     table: HashMap<String, String>,
@@ -98,11 +98,12 @@ impl Glossary {
             },
             "list" => {
                 let other = args.get(1);
-                if other.is_some() && other.unwrap().as_str() == "-s" {
-                    self.list_with_sorted();
-                } else {
+                if other.is_none() {
                     self.list();
+                } else {
+                    self.pause_with_list(other.unwrap())?;
                 }
+
             },
             other => {
                 return Err(format!("not find commadn called {}\n",other));
@@ -113,6 +114,38 @@ impl Glossary {
 
     #[allow(unused)]
     fn set_default_file(filename: &str) -> Result<(),String> {
+        Ok(())
+    }
+
+
+    fn pause_with_list(&self, arg: &str) -> Result<(),String>{
+        if arg.len() == 1 { //only -
+            return Err(String::from("not have specific parameters\n"));
+        }
+        let mut it = arg.chars();
+        if it.next().unwrap() != '-' {
+            return Err(format!("parameters illegal this -> {}",arg));
+        }
+        let mut result: Vec<String> = self.table
+            .iter()
+            .map(|pair| { format!("{:<10} {:<10}",pair.0, pair.1) })
+            .collect();
+        for ch in it {
+            match ch {
+                's' => {
+                    result.sort();
+                },
+                'n' => {
+                    for line in result.iter_mut() {
+                        tools::cut_word(line);
+                    }
+                }
+                other => {
+                    return Err(format!("not have commad called -{}\n",other));
+                }
+            }
+        }
+        tools::print_vec(&result);
         Ok(())
     }
 }

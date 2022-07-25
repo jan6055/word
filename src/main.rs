@@ -12,7 +12,7 @@ fn main() {
                                     .unwrap_or(&String::from("###"))
                                     .as_str() == "-f";
     if !has_input_file && default_filename.is_err() {
-        eprint!("Error: not found path WORD_DEFAULT_FILE_PATH and not have input file\n");
+        eprint!("Error: not found path WORD_DEFAULT_FILE and not have input file\n");
         exit(1);
     }
     let mut glossary;
@@ -27,13 +27,12 @@ fn main() {
     } else {
         glossary = Glossary::from(default_filename.unwrap().as_str())
     }
-    // let mut glossary = Glossary::from("/home/jan/code/rust/word/test.txt");
     match glossary.run(args) {
         Ok(_) => (),
-        Err(err) => eprint!("{}",err),
+        Err(err) => eprint!("Error: {}",err),
     }
-    // args.iter()
-    //     .for_each(|arg| println!("{}",arg));
 }
 
-
+// fn main() {
+    
+// }
