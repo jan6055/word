@@ -47,7 +47,8 @@ impl Glossary {
                     let mut it = line.split(' ');
                     let word = it.next().unwrap();
                     let translation = it.next().unwrap();
-                    glossary.add(word, translation);
+                    glossary.add(word.trim(), translation.trim());
+                    // glossary.add(word, translation);
                 }
                 glossary.filename = filename.to_string();
                 glossary
@@ -88,7 +89,7 @@ impl Glossary {
                 let translation = translation.unwrap();
                 self.add(word, translation);
             },
-            "remove" => {
+            "remove" | "rm" => {
                 let word = args.get(1);
                 if word.is_none() {
                     return Err(String::from("no input word\n"));
@@ -96,7 +97,7 @@ impl Glossary {
                 let word = word.unwrap();
                 self.remove(word)?;
             },
-            "list" => {
+            "list" | "l" => {
                 let other = args.get(1);
                 if other.is_none() {
                     self.list();
