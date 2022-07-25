@@ -44,11 +44,11 @@ impl Glossary {
             Ok(lines) => {
                 let mut glossary = Glossary::new();
                 for line in lines {
-                    let mut it = line.split(' ');
-                    let word = it.next().unwrap();
-                    let translation = it.next().unwrap();
-                    glossary.add(word.trim(), translation.trim());
-                    // glossary.add(word, translation);
+                    //原因 -> split
+                    let idx = line.find(" ");
+                    let (word, translation) = line.trim().split_at(idx.unwrap());
+                    // dbg!(format!("--{word},{translation}--"));
+                    glossary.add(word, translation.trim_start());
                 }
                 glossary.filename = filename.to_string();
                 glossary
